@@ -29,7 +29,7 @@
           attribution: 'Animated path made with <a href="https://d3js.org/">D3</a>, Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://mapbox.com">Mapbox</a>',
           maxZoom: 18,
           minZoom: 16,
-          id: 'mapbox.light',
+          id: 'mapbox.satellite',
           accessToken: 'pk.eyJ1IjoiY3VyZW1hbmdvIiwiYSI6ImNpcTQ4cGFwbDAxbmVmd25vZGNiOTVzeGEifQ.GWZByYkIft6eMRha69C8nw'
         }).addTo(map);
 
@@ -81,18 +81,11 @@
             .enter()
             .append("path")
             .style("fill","none")  //
-            .style("stroke","black")    // line color
+            .style("stroke","cyan")    // line color
             .style("stroke-width","2px") // line width
             .style("opacity","1");    // line opacity
 
-        // Draw the traveling circle
-        // it will travel along our path
-        var marker = g.append("circle")
-            .attr("r", 10)    // traveling circle radius
-            .attr("id", "marker")
-            .style("fill", "yellow")  // traveling circle color
-            .style("opacity", "0.75"); // traveling circle opacity
-
+        
         // Draw the origin (first point) and destination (last point)
         // of your path as circles
         var originANDdestination = [featuresdata[0], featuresdata[7]];
@@ -101,9 +94,10 @@
             .enter()
             .append("circle", ".loc")
             .attr("r", 5)  // origin/destination circle radius
-            .style("fill", "green")  // origin/destination color
+            .style("fill", "red")  // origin/destination color
             .style("opacity", "1");  // origin/destination opacity
-
+        
+  
         // Add labels to the origin and destination
         var text = g.selectAll("text")
             .data(originANDdestination)
@@ -112,13 +106,25 @@
             .text(function(d){
               return d.properties.name  //"name" is the attribute we added when creating the geojson file
             })
-            .attr("y", -15) // relative y position of the label to the circle
-            .attr("x", -10)  // relative x position of the label to the circle
-            .style("fill","black")  // label font color
+            .attr("y", - 22) // relative y position of the label to the circle
+            .attr("x", 0)  // relative x position of the label to the circle
+            .style("fill","yellow")  // label font color
             .style("font-weight","bold")  // label font weight
             .style("font-size","13px")    // label font size
             .style("text-shadow","2px 2px 3px #FFF, 4px 4px 6px #000");  // add shadow
+      
+        // Draw the traveling marker
+        // it will travel along our path
+        var marker=g.append("image")
+            .attr("x", -33)
+            .attr("y", -32)
+            .attr("width", 40)
+            .attr("height", 40)
+            .attr("xlink:href", "bicycle.png")
+            .attr("preserveAspectRatio", true)
+            .attr("id","marker")
 
+ 
         // The functions below will reset the view when zooms in or out
         map.on("viewreset", reset);
         reset();
@@ -158,10 +164,10 @@
                         map.latLngToLayerPoint(new L.LatLng(y, x)).y + ")";
                 });
 
-            svg.attr("width", bottomRight[0] - topLeft[0] + 500)
+            svg.attr("width", bottomRight[0] - topLeft[0] + 1500)
                 .attr("height", bottomRight[1] - topLeft[1] + 250)
                 .style("left", topLeft[0] - 50 + "px")
-                .style("top", topLeft[1] - 50 + "px");
+                .style("top", topLeft[1] - 60 + "px");
 
             linePath.attr("d", toLine);
 
@@ -170,7 +176,7 @@
 
         function transition() {
             linePath.transition()
-                .duration(7500)
+                .duration(17500)
                 .attrTween("stroke-dasharray", tweenDash)
                 .each("end", function() {
                     d3.select(this).call(transition);
